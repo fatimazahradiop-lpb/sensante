@@ -9,6 +9,22 @@ from groq import Groq
 
 # Charger les variables d'environnement
 load_dotenv()
+# 1. EN PREMIER : Les imports
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+# 2. EN DEUXIÈME : La création de l'application (C'EST ICI qu'on rajoute app = FastAPI())
+app = FastAPI()
+
+# 3. EN TROISIÈME : Le montage des dossiers statiques
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+# 4. EN DERNIER : Vos routes et fonctions
+@app.get("/")
+def serve_frontend():
+    """Servir la page d'accueil."""
+    return FileResponse("frontend/index.html")
 
 # Client Groq (charge au demarrage)
 groq_client = None
@@ -190,3 +206,4 @@ def predict(patient: PatientInput):
         confiance=confiance,
         message=messages.get(diagnostic, "Consultez un médecin pour un diagnostic approfondi.")
     )
+
